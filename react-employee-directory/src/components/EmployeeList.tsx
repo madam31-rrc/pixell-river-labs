@@ -1,7 +1,11 @@
-import { departments } from '../data/employees';
+import type { Department } from '../types/Employee';
 import DepartmentSection from './DepartmentSection';
 
-function EmployeeList() {
+interface EmployeeListProps {
+  departments: Department[];
+}
+
+function EmployeeList({ departments }: EmployeeListProps) {
   return (
     <main className="main">
       {departments.map((department, index) => (
