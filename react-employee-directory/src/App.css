@@ -175,3 +175,78 @@
 .add-employee-form button:active {
   transform: translateY(1px);
 }
+
+/* Navbar Styles */
+.navbar {
+  background-color: #34495e;
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #2c3e50;
+}
+
+.nav-link.active {
+  background-color: #3498db;
+}
+
+/* Organization Page Styles */
+.organization-section {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.organization-section h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.role-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.role-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #ecf0f1;
+  border-left: 4px solid #3498db;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.role-item:hover {
+  background-color: #d5dbdb;
+}
+
+.person-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.person-role {
+  color: #7f8c8d;
+  font-style: italic;
+}
