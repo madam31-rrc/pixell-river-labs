@@ -1,63 +1,36 @@
-import { useState } from 'react';
-import type { Department, Employee } from '../types/Employee';
+import { useFormInput } from '../hooks/useFormInput';
+import type { Department } from '../types/Employee';
 
 interface AddEmployeeFormProps {
   departments: Department[];
-  onAddEmployee: (employee: Employee, departmentName: string) => void;
+  onAddEmployee: () => void;
 }
 
 function AddEmployeeForm({ departments, onAddEmployee }: AddEmployeeFormProps) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('');
-  const [errors, setErrors] = useState<string[]>([]);
+  const {
+    firstName,
+    lastName,
+    department,
+    errors,
+    setFirstName,
+    setLastName,
+    setDepartment,
+    handleSubmit
+  } = useFormInput();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Clear previous errors
-    setErrors([]);
-    
-    // Validation
-    const newErrors: string[] = [];
-    
-    if (firstName.trim().length < 3) {
-      newErrors.push('First name must be at least 3 characters long');
-    }
-    
-    if (lastName.trim().length === 0) {
-      newErrors.push('Last name is required');
-    }
-    
-    if (selectedDepartment === '') {
-      newErrors.push('Please select a department');
-    }
-    
-    // If there are errors, show them and don't submit
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    
-    // If validation passes, add the employee
-    const newEmployee: Employee = {
-      firstName: firstName.trim(),
-      lastName: lastName.trim()
-    };
-    
-    onAddEmployee(newEmployee, selectedDepartment);
-    
-    // Clear the form
-    setFirstName('');
-    setLastName('');
-    setSelectedDepartment('');
+    handleSubmit(() => {
+      onAddEmployee();
+    });
   };
 
   return (
     <div className="add-employee-form">
       <h2>Add New Employee</h2>
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <div className="form-group">
           <label htmlFor="firstName">First Name:</label>
           <input
@@ -84,8 +57,8 @@ function AddEmployeeForm({ departments, onAddEmployee }: AddEmployeeFormProps) {
           <label htmlFor="department">Department:</label>
           <select
             id="department"
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
           >
             <option value="">-- Select Department --</option>
             {departments.map((dept, index) => (
