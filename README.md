@@ -44,3 +44,6 @@ Implemented client-side routing to navigate between multiple pages:
 - Created Organization page displaying leadership and management
 - Built navigation system with shared layout
 - Implemented proper route structure
+
+### Lab 3.1: Hook-Service-Repository Architecture
+**Branch:** `fs_lab-3.1`
