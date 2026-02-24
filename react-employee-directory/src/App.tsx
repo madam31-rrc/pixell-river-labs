@@ -1,28 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import EmployeeList from './components/EmployeeList';
 import AddEmployeeForm from './components/AddEmployeeForm';
 import Organization from './components/Organization';
+import { employeeRepo } from './repositories/employeeRepo';
 import { departments as initialDepartments } from './data/employees';
-import type { Department, Employee } from './types/Employee';
 import './App.css';
 
 function App() {
-  const [departments, setDepartments] = useState<Department[]>(initialDepartments);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleAddEmployee = (employee: Employee, departmentName: string) => {
-    const updatedDepartments = departments.map(dept => {
-      if (dept.name === departmentName) {
-        return {
-          ...dept,
-          employees: [...dept.employees, employee]
-        };
-      }
-      return dept;
-    });
-    
-    setDepartments(updatedDepartments);
+  useEffect(() => {
+    employeeRepo.setDepartments(initialDepartments);
+  }, []);
+
+  const departments = employeeRepo.getDepartments();
+
+  const handleEmployeeAdded = () => {
+    setRefreshKey(prev => prev + 1);
   };
 
   return (
@@ -33,13 +29,13 @@ function App() {
           <Route 
             path="employees" 
             element={
-              <>
+              <div key={refreshKey}>
                 <EmployeeList departments={departments} />
                 <AddEmployeeForm 
                   departments={departments} 
-                  onAddEmployee={handleAddEmployee} 
+                  onAddEmployee={handleEmployeeAdded} 
                 />
-              </>
+              </div>
             } 
           />
           <Route path="organization" element={<Organization />} />
