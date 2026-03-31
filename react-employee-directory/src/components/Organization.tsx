@@ -1,22 +1,33 @@
-import { organizationData } from '../data/organization';
+import { organizationRepo } from '../repositories/organizationRepo';
+import AddRoleForm from './AddRoleForm';
 
-function Organization() {
+interface OrganizationProps {
+  refreshKey: number;
+  onRoleAdded: () => void;
+}
+
+function Organization({ refreshKey, onRoleAdded }: OrganizationProps) {
+  const roles = organizationRepo.getRoles();
+
   return (
-    <main className="main">
-      <div className="organization-section">
-        <h2>Leadership & Management</h2>
-        <div className="role-list">
-          {organizationData.map((person, index) => (
-            <div key={index} className="role-item">
-              <div className="person-name">
-                {person.firstName} {person.lastName}
+    <div key={refreshKey}>
+      <main className="main">
+        <div className="organization-section">
+          <h2>Leadership & Management</h2>
+          <div className="role-list">
+            {roles.map((person, index) => (
+              <div key={index} className="role-item">
+                <div className="person-name">
+                  {person.firstName} {person.lastName}
+                </div>
+                <div className="person-role">{person.role}</div>
               </div>
-              <div className="person-role">{person.role}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <AddRoleForm onAddRole={onRoleAdded} />
+    </div>
   );
 }
 
