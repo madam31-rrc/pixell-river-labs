@@ -1,34 +1,32 @@
-import { useRoleFormInput } from '../hooks/useRoleFormInput';
+import { useFormInput } from '../hooks/useFormInput';
+import type { Department } from '../types/Employee';
 
-interface AddRoleFormProps {
-  onAddRole: () => void;
+interface AddEmployeeFormProps {
+  departments: Department[];
+  onAddEmployee: () => void;
 }
 
-function AddRoleForm({ onAddRole }: AddRoleFormProps) {
+function AddEmployeeForm({ departments, onAddEmployee }: AddEmployeeFormProps) {
   const {
     firstName,
     lastName,
-    role,
+    department,
     errors,
     setFirstName,
     setLastName,
-    setRole,
-    handleSubmit
-  } = useRoleFormInput();
+    setDepartment,
+    handleSubmit,
+  } = useFormInput();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    handleSubmit(() => {
-      // Notify parent component to refresh
-      onAddRole();
-    });
+    await handleSubmit(onAddEmployee);
   };
 
   return (
     <div className="add-employee-form">
-      <h2>Add New Leadership Role</h2>
-      
+      <h2>Add New Employee</h2>
+
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label htmlFor="firstName">First Name:</label>
@@ -53,14 +51,19 @@ function AddRoleForm({ onAddRole }: AddRoleFormProps) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="role">Role:</label>
-          <input
-            type="text"
-            id="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            placeholder="Enter role (e.g., VP of Marketing)"
-          />
+          <label htmlFor="department">Department:</label>
+          <select
+            id="department"
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+          >
+            <option value="">-- Select Department --</option>
+            {departments.map((dept, index) => (
+              <option key={index} value={dept.name}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {errors.length > 0 && (
@@ -71,10 +74,10 @@ function AddRoleForm({ onAddRole }: AddRoleFormProps) {
           </div>
         )}
 
-        <button type="submit">Add Role</button>
+        <button type="submit">Add Employee</button>
       </form>
     </div>
   );
 }
 
-export default AddRoleForm;
+export default AddEmployeeForm;

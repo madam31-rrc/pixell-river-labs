@@ -1,41 +1,35 @@
+import { prisma } from '../db/prisma';
 import type { Department, Employee } from '../types/Employee';
-import { departments as initialDepartments } from '../data/employees';
 
 class EmployeeRepository {
-  private departments: Department[] = [];
-
-  constructor() {
-    // Initialize with data
-    this.departments = JSON.parse(JSON.stringify(initialDepartments));
+  async getDepartments(): Promise<Department[]> {
+    const rows = await prisma.department.findMany({ include: { employees: true } });
+    return rows.map(d => ({
+      name: d.name,
+      employees: d.employees.map(e => ({ firstName: e.firstName, lastName: e.lastName })),
+    }));
   }
 
-  // Get all departments
-  getDepartments(): Department[] {
-    return this.departments;
+  async getDepartmentByName(name: string): Promise<Department | undefined> {
+    const row = await prisma.department.findUnique({
+      where: { name },
+      include: { employees: true },
+    });
+    if (!row) return undefined;
+    return {
+      name: row.name,
+      employees: row.employees.map(e => ({ firstName: e.firstName, lastName: e.lastName })),
+    };
   }
 
-  // Get a specific department by name
-  getDepartmentByName(name: string): Department | undefined {
-    return this.departments.find(dept => dept.name === name);
-  }
-
-  // Create a new employee in a specific department
-  createEmployee(employee: Employee, departmentName: string): boolean {
-    const department = this.getDepartmentByName(departmentName);
-    
-    if (!department) {
-      return false;
-    }
-
-    department.employees.push(employee);
+  async createEmployee(employee: Employee, departmentName: string): Promise<boolean> {
+    const dept = await prisma.department.findUnique({ where: { name: departmentName } });
+    if (!dept) return false;
+    await prisma.employee.create({
+      data: { firstName: employee.firstName, lastName: employee.lastName, departmentId: dept.id },
+    });
     return true;
-  }
-
-  // Get all employees across all departments
-  getAllEmployees(): Employee[] {
-    return this.departments.flatMap(dept => dept.employees);
   }
 }
 
-// Export singleton instance
 export const employeeRepo = new EmployeeRepository();

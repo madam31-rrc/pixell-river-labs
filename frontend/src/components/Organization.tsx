@@ -1,16 +1,22 @@
-import { organizationRepo } from '../repositories/organizationRepo';
+import { useState, useEffect, useCallback } from 'react';
 import AddRoleForm from './AddRoleForm';
+import { getRoles } from '../api';
+import type { Role } from '../api';
 
-interface OrganizationProps {
-  refreshKey: number;
-  onRoleAdded: () => void;
-}
+function Organization() {
+  const [roles, setRoles] = useState<Role[]>([]);
 
-function Organization({ refreshKey, onRoleAdded }: OrganizationProps) {
-  const roles = organizationRepo.getRoles();
+  const fetchRoles = useCallback(async () => {
+    const data = await getRoles();
+    setRoles(data);
+  }, []);
+
+  useEffect(() => {
+    fetchRoles();
+  }, [fetchRoles]);
 
   return (
-    <div key={refreshKey}>
+    <div>
       <main className="main">
         <div className="organization-section">
           <h2>Leadership & Management</h2>
@@ -26,7 +32,7 @@ function Organization({ refreshKey, onRoleAdded }: OrganizationProps) {
           </div>
         </div>
       </main>
-      <AddRoleForm onAddRole={onRoleAdded} />
+      <AddRoleForm onAddRole={fetchRoles} />
     </div>
   );
 }
