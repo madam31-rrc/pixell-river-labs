@@ -9,6 +9,8 @@ function authHeaders(token: string | null): Record<string, string> {
   return headers;
 }
 
+// ── Employees ────────────────────────────────────────────────────────────────
+
 export async function getDepartments(): Promise<Department[]> {
   const res = await fetch('/api/employees');
   if (!res.ok) throw new Error('Failed to fetch departments');
@@ -32,6 +34,34 @@ export async function createEmployee(
   }
 }
 
+export async function updateEmployee(
+  id: number,
+  firstName: string,
+  lastName: string,
+  departmentName: string,
+  token: string | null
+): Promise<void> {
+  const res = await fetch(`/api/employees/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ firstName, lastName, departmentName }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error((data.errors as string[] | undefined)?.join(', ') ?? data.error ?? 'Failed to update employee');
+  }
+}
+
+export async function deleteEmployee(id: number, token: string | null): Promise<void> {
+  const res = await fetch(`/api/employees/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new Error('Failed to delete employee');
+}
+
+// ── Organization Roles ───────────────────────────────────────────────────────
+
 export async function getRoles(): Promise<Role[]> {
   const res = await fetch('/api/organization');
   if (!res.ok) throw new Error('Failed to fetch roles');
@@ -53,4 +83,30 @@ export async function createRole(
     const data = await res.json();
     throw new Error((data.errors as string[] | undefined)?.join(', ') ?? data.error ?? 'Failed to create role');
   }
+}
+
+export async function updateRole(
+  id: number,
+  firstName: string,
+  lastName: string,
+  role: string,
+  token: string | null
+): Promise<void> {
+  const res = await fetch(`/api/organization/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ firstName, lastName, role }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error((data.errors as string[] | undefined)?.join(', ') ?? data.error ?? 'Failed to update role');
+  }
+}
+
+export async function deleteRole(id: number, token: string | null): Promise<void> {
+  const res = await fetch(`/api/organization/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new Error('Failed to delete role');
 }

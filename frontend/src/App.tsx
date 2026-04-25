@@ -29,7 +29,7 @@ function App() {
             path="employees"
             element={
               <div>
-                <EmployeeList departments={departments} />
+                <EmployeeList departments={departments} onRefresh={fetchDepartments} />
                 <AddEmployeeForm
                   departments={departments}
                   onAddEmployee={fetchDepartments}
