@@ -13,22 +13,18 @@ function AddRoleForm({ onAddRole }: AddRoleFormProps) {
     setFirstName,
     setLastName,
     setRole,
-    handleSubmit
+    handleSubmit,
   } = useRoleFormInput();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    handleSubmit(() => {
-      // Notify parent component to refresh
-      onAddRole();
-    });
+    await handleSubmit(onAddRole);
   };
 
   return (
     <div className="add-employee-form">
       <h2>Add New Leadership Role</h2>
-      
+
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label htmlFor="firstName">First Name:</label>

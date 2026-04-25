@@ -15,21 +15,18 @@ function AddEmployeeForm({ departments, onAddEmployee }: AddEmployeeFormProps) {
     setFirstName,
     setLastName,
     setDepartment,
-    handleSubmit
+    handleSubmit,
   } = useFormInput();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    handleSubmit(() => {
-      onAddEmployee();
-    });
+    await handleSubmit(onAddEmployee);
   };
 
   return (
     <div className="add-employee-form">
       <h2>Add New Employee</h2>
-      
+
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label htmlFor="firstName">First Name:</label>

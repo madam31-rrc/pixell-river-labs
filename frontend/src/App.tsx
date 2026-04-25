@@ -1,69 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import EmployeeList from './components/EmployeeList';
 import AddEmployeeForm from './components/AddEmployeeForm';
 import Organization from './components/Organization';
-import { employeeRepo } from './repositories/employeeRepo';
-import { organizationRepo } from './repositories/organizationRepo';
-import { departments as initialDepartments } from './data/employees';
-import { organizationData as initialOrganizationData } from './data/organization';
+import { getDepartments } from './api';
+import type { Department } from './api';
 import './App.css';
 
 function App() {
-  const [employeeRefreshKey, setEmployeeRefreshKey] = useState(0);
-  const [organizationRefreshKey, setOrganizationRefreshKey] = useState(0);
+  const [departments, setDepartments] = useState<Department[]>([]);
 
-  // Initialize repositories with data on first load
-  useEffect(() => {
-    const departmentsCopy = JSON.parse(JSON.stringify(initialDepartments));
-    employeeRepo.setDepartments(departmentsCopy);
-    
-    const organizationCopy = JSON.parse(JSON.stringify(initialOrganizationData));
-    organizationRepo.setRoles(organizationCopy);
-    
-    setEmployeeRefreshKey(prev => prev + 1);
-    setOrganizationRefreshKey(prev => prev + 1);
+  const fetchDepartments = useCallback(async () => {
+    const data = await getDepartments();
+    setDepartments(data);
   }, []);
 
-  // Get data from repositories
-  const departments = employeeRepo.getDepartments();
-
-  // Callbacks to refresh views
-  const handleEmployeeAdded = () => {
-    setEmployeeRefreshKey(prev => prev + 1);
-  };
-
-  const handleRoleAdded = () => {
-    setOrganizationRefreshKey(prev => prev + 1);
-  };
+  useEffect(() => {
+    fetchDepartments();
+  }, [fetchDepartments]);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/employees" replace />} />
-          <Route 
-            path="employees" 
+          <Route
+            path="employees"
             element={
-              <div key={employeeRefreshKey}>
+              <div>
                 <EmployeeList departments={departments} />
-                <AddEmployeeForm 
-                  departments={departments} 
-                  onAddEmployee={handleEmployeeAdded} 
+                <AddEmployeeForm
+                  departments={departments}
+                  onAddEmployee={fetchDepartments}
                 />
               </div>
-            } 
+            }
           />
-          <Route 
-            path="organization" 
-            element={
-              <Organization 
-                refreshKey={organizationRefreshKey}
-                onRoleAdded={handleRoleAdded}
-              />
-            } 
-          />
+          <Route path="organization" element={<Organization />} />
         </Route>
       </Routes>
     </BrowserRouter>

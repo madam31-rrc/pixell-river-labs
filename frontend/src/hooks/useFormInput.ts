@@ -1,84 +1,49 @@
 import { useState } from 'react';
-import { employeeService } from '../services/employeeService';
-
-interface FormState {
-  firstName: string;
-  lastName: string;
-  department: string;
-  errors: string[];
-}
+import { createEmployee } from '../api';
 
 export function useFormInput() {
-  const [formState, setFormState] = useState<FormState>({
-    firstName: '',
-    lastName: '',
-    department: '',
-    errors: []
-  });
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [department, setDepartment] = useState('');
+  const [errors, setErrors] = useState<string[]>([]);
 
-  const setFirstName = (value: string) => {
-    setFormState(prev => ({ ...prev, firstName: value }));
-  };
+  const handleSubmit = async (onSuccess?: () => void) => {
+    setErrors([]);
 
-  const setLastName = (value: string) => {
-    setFormState(prev => ({ ...prev, lastName: value }));
-  };
-
-  const setDepartment = (value: string) => {
-    setFormState(prev => ({ ...prev, department: value }));
-  };
-
-  const clearErrors = () => {
-    setFormState(prev => ({ ...prev, errors: [] }));
-  };
-
-  const handleSubmit = (onSuccess?: () => void) => {
-    clearErrors();
-
-    const result = employeeService.createEmployee(
-      formState.firstName,
-      formState.lastName,
-      formState.department
-    );
-
-    if (!result.isValid) {
-      setFormState(prev => ({ ...prev, errors: result.errors }));
-      return false;
+    const validationErrors: string[] = [];
+    if (!firstName || firstName.trim().length < 3) {
+      validationErrors.push('First name must be at least 3 characters long');
+    }
+    if (!lastName || lastName.trim().length === 0) {
+      validationErrors.push('Last name is required');
+    }
+    if (!department) {
+      validationErrors.push('Department is required');
+    }
+    if (validationErrors.length > 0) {
+      setErrors(validationErrors);
+      return;
     }
 
-    setFormState({
-      firstName: '',
-      lastName: '',
-      department: '',
-      errors: []
-    });
-
-    if (onSuccess) {
-      onSuccess();
+    try {
+      await createEmployee(firstName.trim(), lastName.trim(), department);
+      setFirstName('');
+      setLastName('');
+      setDepartment('');
+      onSuccess?.();
+    } catch (err) {
+      setErrors([err instanceof Error ? err.message : 'Failed to add employee']);
     }
-
-    return true;
-  };
-
-  const resetForm = () => {
-    setFormState({
-      firstName: '',
-      lastName: '',
-      department: '',
-      errors: []
-    });
   };
 
   return {
-    firstName: formState.firstName,
-    lastName: formState.lastName,
-    department: formState.department,
-    errors: formState.errors,
+    firstName,
+    lastName,
+    department,
+    errors,
     setFirstName,
     setLastName,
     setDepartment,
-    clearErrors,
     handleSubmit,
-    resetForm
   };
 }

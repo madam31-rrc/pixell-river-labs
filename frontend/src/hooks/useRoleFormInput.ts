@@ -1,95 +1,49 @@
 import { useState } from 'react';
-import { organizationService } from '../services/organizationService';
-
-interface RoleFormState {
-  firstName: string;
-  lastName: string;
-  role: string;
-  errors: string[];
-}
+import { createRole } from '../api';
 
 export function useRoleFormInput() {
-  const [formState, setFormState] = useState<RoleFormState>({
-    firstName: '',
-    lastName: '',
-    role: '',
-    errors: []
-  });
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [role, setRole] = useState('');
+  const [errors, setErrors] = useState<string[]>([]);
 
-  // Update firstName
-  const setFirstName = (value: string) => {
-    setFormState(prev => ({ ...prev, firstName: value }));
-  };
+  const handleSubmit = async (onSuccess?: () => void) => {
+    setErrors([]);
 
-  // Update lastName
-  const setLastName = (value: string) => {
-    setFormState(prev => ({ ...prev, lastName: value }));
-  };
-
-  // Update role
-  const setRole = (value: string) => {
-    setFormState(prev => ({ ...prev, role: value }));
-  };
-
-  // Clear all errors
-  const clearErrors = () => {
-    setFormState(prev => ({ ...prev, errors: [] }));
-  };
-
-  // Handle form submission with validation
-  const handleSubmit = (onSuccess?: () => void) => {
-    // Clear previous errors
-    clearErrors();
-
-    // Call the service to validate and create role
-    const result = organizationService.createRole(
-      formState.firstName,
-      formState.lastName,
-      formState.role
-    );
-
-    if (!result.isValid) {
-      // Show validation errors
-      setFormState(prev => ({ ...prev, errors: result.errors }));
-      return false;
+    const validationErrors: string[] = [];
+    if (!firstName || firstName.trim().length < 3) {
+      validationErrors.push('First name must be at least 3 characters long');
+    }
+    if (!lastName || lastName.trim().length === 0) {
+      validationErrors.push('Last name is required');
+    }
+    if (!role || role.trim().length === 0) {
+      validationErrors.push('Role is required');
+    }
+    if (validationErrors.length > 0) {
+      setErrors(validationErrors);
+      return;
     }
 
-    // Success! Clear the form
-    setFormState({
-      firstName: '',
-      lastName: '',
-      role: '',
-      errors: []
-    });
-
-    // Call success callback if provided
-    if (onSuccess) {
-      onSuccess();
+    try {
+      await createRole(firstName.trim(), lastName.trim(), role.trim());
+      setFirstName('');
+      setLastName('');
+      setRole('');
+      onSuccess?.();
+    } catch (err) {
+      setErrors([err instanceof Error ? err.message : 'Failed to add role']);
     }
-
-    return true;
-  };
-
-  // Reset the form
-  const resetForm = () => {
-    setFormState({
-      firstName: '',
-      lastName: '',
-      role: '',
-      errors: []
-    });
   };
 
   return {
-    firstName: formState.firstName,
-    lastName: formState.lastName,
-    role: formState.role,
-    errors: formState.errors,
+    firstName,
+    lastName,
+    role,
+    errors,
     setFirstName,
     setLastName,
     setRole,
-    clearErrors,
     handleSubmit,
-    resetForm
   };
 }
