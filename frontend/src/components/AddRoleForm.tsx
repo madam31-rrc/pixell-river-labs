@@ -1,10 +1,13 @@
+import { useAuth } from '@clerk/react';
 import { useRoleFormInput } from '../hooks/useRoleFormInput';
+import SignInPrompt from './SignInPrompt';
 
 interface AddRoleFormProps {
   onAddRole: () => void;
 }
 
 function AddRoleForm({ onAddRole }: AddRoleFormProps) {
+  const { isSignedIn, isLoaded } = useAuth();
   const {
     firstName,
     lastName,
@@ -20,6 +23,12 @@ function AddRoleForm({ onAddRole }: AddRoleFormProps) {
     e.preventDefault();
     await handleSubmit(onAddRole);
   };
+
+  if (!isLoaded) return null;
+
+  if (!isSignedIn) {
+    return <SignInPrompt action="add new leadership roles" />;
+  }
 
   return (
     <div className="add-employee-form">

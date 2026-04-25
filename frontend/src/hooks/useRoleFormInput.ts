@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useAuth } from '@clerk/react';
 import { createRole } from '../api';
 
 export function useRoleFormInput() {
+  const { getToken } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [role, setRole] = useState('');
@@ -26,7 +28,8 @@ export function useRoleFormInput() {
     }
 
     try {
-      await createRole(firstName.trim(), lastName.trim(), role.trim());
+      const token = await getToken();
+      await createRole(firstName.trim(), lastName.trim(), role.trim(), token);
       setFirstName('');
       setLastName('');
       setRole('');

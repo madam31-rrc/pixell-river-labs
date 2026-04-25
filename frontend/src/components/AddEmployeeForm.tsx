@@ -1,4 +1,6 @@
+import { useAuth } from '@clerk/react';
 import { useFormInput } from '../hooks/useFormInput';
+import SignInPrompt from './SignInPrompt';
 import type { Department } from '../types/Employee';
 
 interface AddEmployeeFormProps {
@@ -7,6 +9,7 @@ interface AddEmployeeFormProps {
 }
 
 function AddEmployeeForm({ departments, onAddEmployee }: AddEmployeeFormProps) {
+  const { isSignedIn, isLoaded } = useAuth();
   const {
     firstName,
     lastName,
@@ -22,6 +25,12 @@ function AddEmployeeForm({ departments, onAddEmployee }: AddEmployeeFormProps) {
     e.preventDefault();
     await handleSubmit(onAddEmployee);
   };
+
+  if (!isLoaded) return null;
+
+  if (!isSignedIn) {
+    return <SignInPrompt action="add new employees" />;
+  }
 
   return (
     <div className="add-employee-form">

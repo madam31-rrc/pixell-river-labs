@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useAuth } from '@clerk/react';
 import { createEmployee } from '../api';
 
 export function useFormInput() {
+  const { getToken } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [department, setDepartment] = useState('');
@@ -26,7 +28,8 @@ export function useFormInput() {
     }
 
     try {
-      await createEmployee(firstName.trim(), lastName.trim(), department);
+      const token = await getToken();
+      await createEmployee(firstName.trim(), lastName.trim(), department, token);
       setFirstName('');
       setLastName('');
       setDepartment('');
