@@ -3,6 +3,12 @@ import type { Role } from '../types/Role';
 
 export type { Department, Role };
 
+function authHeaders(token: string | null): Record<string, string> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return headers;
+}
+
 export async function getDepartments(): Promise<Department[]> {
   const res = await fetch('/api/employees');
   if (!res.ok) throw new Error('Failed to fetch departments');
@@ -12,11 +18,12 @@ export async function getDepartments(): Promise<Department[]> {
 export async function createEmployee(
   firstName: string,
   lastName: string,
-  departmentName: string
+  departmentName: string,
+  token: string | null
 ): Promise<void> {
   const res = await fetch('/api/employees', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(token),
     body: JSON.stringify({ firstName, lastName, departmentName }),
   });
   if (!res.ok) {
@@ -34,11 +41,12 @@ export async function getRoles(): Promise<Role[]> {
 export async function createRole(
   firstName: string,
   lastName: string,
-  role: string
+  role: string,
+  token: string | null
 ): Promise<void> {
   const res = await fetch('/api/organization', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(token),
     body: JSON.stringify({ firstName, lastName, role }),
   });
   if (!res.ok) {
