@@ -51,7 +51,8 @@ class OrganizationService {
     const newRole: Role = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
-      role: role.trim()
+      role: role.trim(),
+      id: 0
     };
 
     const success = organizationRepo.createRole(newRole);

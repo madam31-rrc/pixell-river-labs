@@ -87,7 +87,7 @@ function DepartmentSection({ department, allDepartmentNames, onRefresh }: Depart
               </div>
               {editError && <p className="admin-inline-error">{editError}</p>}
               <div className="admin-controls">
-                <button className="admin-btn admin-btn--save" onClick={() => handleSave(employee.id)}>Save</button>
+                <button className="admin-btn admin-btn--save" onClick={() => employee.id !== undefined && handleSave(employee.id)}>Save</button>
                 <button className="admin-btn admin-btn--cancel" onClick={cancelEdit}>Cancel</button>
               </div>
             </li>
@@ -98,14 +98,14 @@ function DepartmentSection({ department, allDepartmentNames, onRefresh }: Depart
                 <div className="admin-controls">
                   <button
                     className="admin-btn admin-btn--edit"
-                    onClick={() => startEdit(employee.id, employee.firstName, employee.lastName)}
+                    onClick={() => employee.id !== undefined && startEdit(employee.id, employee.firstName, employee.lastName)}
                     aria-label="Edit employee"
                   >
                     Edit
                   </button>
                   <button
                     className="admin-btn admin-btn--delete"
-                    onClick={() => handleDelete(employee.id)}
+                    onClick={() => employee.id !== undefined && handleDelete(employee.id)}
                     aria-label="Delete employee"
                   >
                     Delete

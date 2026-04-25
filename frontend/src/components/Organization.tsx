@@ -23,6 +23,7 @@ function Organization() {
   useEffect(() => { fetchRoles(); }, [fetchRoles]);
 
   const startEdit = (role: Role) => {
+    if (role.id === undefined) return;
     setEditingId(role.id);
     setEditFirst(role.firstName);
     setEditLast(role.lastName);
@@ -86,7 +87,7 @@ function Organization() {
                   </div>
                   {editError && <p className="admin-inline-error">{editError}</p>}
                   <div className="admin-controls">
-                    <button className="admin-btn admin-btn--save" onClick={() => handleSave(person.id)}>Save</button>
+                    <button className="admin-btn admin-btn--save" onClick={() => person.id !== undefined && handleSave(person.id)}>Save</button>
                     <button className="admin-btn admin-btn--cancel" onClick={cancelEdit}>Cancel</button>
                   </div>
                 </div>
@@ -107,7 +108,7 @@ function Organization() {
                       </button>
                       <button
                         className="admin-btn admin-btn--delete"
-                        onClick={() => handleDelete(person.id)}
+                        onClick={() => person.id !== undefined && handleDelete(person.id)}
                         aria-label="Delete role"
                       >
                         Delete
