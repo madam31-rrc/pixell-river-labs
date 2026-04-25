@@ -68,16 +68,162 @@
   padding-left: 0;
 }
 
-.employee-list li {
+.employee-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   padding: 0.75rem;
   margin: 0.5rem 0;
   background-color: #ecf0f1;
   border-left: 4px solid #3498db;
   border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
-.employee-list li:hover {
+.employee-item:hover {
+  background-color: #dde4e6;
+}
+
+.employee-item--editing {
+  flex-direction: column;
+  align-items: stretch;
+  background-color: #eaf4fb;
+  border-left-color: #2980b9;
+}
+
+.employee-name {
+  flex: 1;
+  color: #2c3e50;
+}
+
+/* Role list adjustments for admin controls */
+.role-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #ecf0f1;
+  border-left: 4px solid #3498db;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.role-item:hover {
+  background-color: #dde4e6;
+}
+
+.role-item--editing {
+  flex-direction: column;
+  align-items: stretch;
+  background-color: #eaf4fb;
+  border-left-color: #2980b9;
+}
+
+.role-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Inline edit forms */
+.employee-edit-form,
+.role-edit-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.employee-edit-form input,
+.employee-edit-form select,
+.role-edit-form input {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #b0c4d8;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  flex: 1;
+  min-width: 120px;
+}
+
+.employee-edit-form input:focus,
+.employee-edit-form select:focus,
+.role-edit-form input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.admin-inline-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin: 0.2rem 0 0;
+}
+
+/* Admin control buttons */
+.admin-controls {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.admin-btn {
+  padding: 0.3rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.admin-btn:active {
+  transform: translateY(1px);
+}
+
+.admin-btn--edit {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  border: 1px solid #bdc3c7;
+}
+
+.admin-btn--edit:hover {
+  background-color: #d5dbdb;
+  border-color: #95a5a6;
+}
+
+.admin-btn--delete {
+  background-color: #fdf0ee;
+  color: #c0392b;
+  border: 1px solid #f5b7b1;
+}
+
+.admin-btn--delete:hover {
+  background-color: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+}
+
+.admin-btn--save {
+  background-color: #3498db;
+  color: white;
+}
+
+.admin-btn--save:hover {
+  background-color: #2980b9;
+}
+
+.admin-btn--cancel {
+  background-color: #ecf0f1;
+  color: #555;
+  border: 1px solid #bdc3c7;
+}
+
+.admin-btn--cancel:hover {
   background-color: #d5dbdb;
 }
 
@@ -326,20 +472,6 @@
   gap: 1rem;
 }
 
-.role-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: #ecf0f1;
-  border-left: 4px solid #3498db;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.role-item:hover {
-  background-color: #d5dbdb;
-}
 
 .person-name {
   font-weight: 600;
